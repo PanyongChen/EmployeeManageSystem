@@ -44,7 +44,7 @@ class Home extends Component {
             <div id="block2">
         <Link to="/create">
           <button type="button" className="btn btn-light">
-            Create
+            Create New Profile
           </button>
         </Link>
         </div>
@@ -56,7 +56,7 @@ class Home extends Component {
            <button className="btitle">Title</button>
            <button className="bphone">Phone</button>
            <button className="bemail">email</button>
-           <button className="breport"># of Direct report to</button>
+           <button className="breport"># of Direct Reportors</button>
         </div>
           {this.props.employee.isLoading ? (
             <Loading />

@@ -24,14 +24,17 @@ const List = props => {
         <div className="li-title">{props.data.title}</div>
         </div>
         <div className="li-phone-wrap">
-      <div className="li-phone">{props.data.cellPhone}</div>
+        <div className="li-phone">{props.data.cellPhone}</div>
+       <a href={`tel:${props.data.cellPhone}`}>
+            <i class="fas fa-phone-volume"></i>
+              </a>
       </div>
       <div className="li-email-wrap">
       <div className="li-email">{props.data.email}</div>
+      <a href={`mailto:${props.data.email}`}>
+             <i class="fas fa-envelope-open"></i>
+              </a>
       </div>
-      {/* <div className="li-manager-wrap">
-      <div className="li-manager">{props.data.manager}</div>
-      </div> */}
       <div className="li-reports-wrap">
       <div className="li-reports">{props.data.directReports.length}</div>
       </div>
