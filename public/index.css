@@ -11,10 +11,45 @@ ul {
   margin-bottom: 0;
 }
 
+.titleBar{
+  height: 50px;
+  display: flex;
+}
+
+.bname {
+  padding-left: 120px;
+}
+
+.bage {
+  padding-left: 50px;
+  padding-right: 30px;
+}
+
+.btitle {
+  padding-left: 50px;
+  padding-right: 40px;
+}
+
+.bphone {
+  padding-left: 50px;
+  padding-right: 70px;
+}
+
+.bemail {
+  padding-left: 50px;
+  padding-right: 120px;
+}
+
+.breport {
+  padding-left: 10px;
+  padding-right: 60px;
+}
+
+
 .home-container {
   margin: 20px auto;
-  overflow: scroll;
-  width: 500px;
+  /* overflow: scroll; */
+  width: 1000px;
   max-height: 550px;
   border: 1px solid lightgrey;
 }
@@ -25,7 +60,7 @@ ul {
   height: 100px;
   padding: 20px;
   border: 1px solid grey;
-  background-color: lightgrey;
+  background-color: lightblue;
 }
 
 img {
@@ -35,7 +70,12 @@ img {
 }
 
 .li-mid {
-  width: 300px;
+  width: 100px;
+  padding: 8px;
+}
+
+.li-reports-wrap{
+  width: 100px;
   padding: 8px;
 }
 
@@ -58,9 +98,55 @@ img {
   font-size: 20px;
 }
 
+.li-title-wrap{
+  width: 100px;
+  padding: 8px; 
+}
+
 .li-title {
   color: grey;
 }
+
+.li-age-wrap {
+  width: 100px;
+  padding: 8px; 
+}
+
+.li-age {
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.li-phone-wrap{
+  width: 200px;
+  padding: 8px; 
+}
+
+.li-phone{
+  font-weight: 400;
+  font-size: 17px;
+}
+
+.li-email-wrap{
+  width: 200px;
+  padding: 8px; 
+}
+
+.li-email{
+  font-weight: 400;
+  font-size: 17px;
+}
+
+/* .li-manager-wrap{
+  width: 200px;
+  padding: 8px; 
+}
+
+.li-manager{
+  font-weight: 400;
+  font-size: 17px;
+} */
+
 
 .create-user {
   width: 400px;

@@ -50,6 +50,14 @@ class Home extends Component {
         </div>
         </div>
         <div className="home-container">
+         <div className="titleBar">
+           <button className="bname">Name</button>
+           <button className="bage">Age</button>
+           <button className="btitle">Title</button>
+           <button className="bphone">Phone</button>
+           <button className="bemail">email</button>
+           <button className="breport"># of Direct report to</button>
+        </div>
           {this.props.employee.isLoading ? (
             <Loading />
           ) : (
