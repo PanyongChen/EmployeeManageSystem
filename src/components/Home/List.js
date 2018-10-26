@@ -19,6 +19,8 @@ const List = props => {
         <div className="li-title">{props.data.title}</div>
       </div>
       <div className="li-age">{props.data.age}</div>
+      <div className="li-phone">{props.data.cellPhone}</div>
+      <div className="li-email">{props.data.email}</div>
       <div className="li-reports">{props.data.directReports.length}</div>
       <Link to={`/detail/${props.data._id}`}>
         <i className="fas fa-angle-right" id="li-arrow" />
