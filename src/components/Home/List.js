@@ -16,8 +16,9 @@ const List = props => {
             {props.data.firstName} {props.data.lastName}
           </div>
         </Link>
+        </div>
         <div className="li-title">{props.data.title}</div>
-      </div>
+      
       <div className="li-age">{props.data.age}</div>
       <div className="li-phone">{props.data.cellPhone}</div>
       <div className="li-email">{props.data.email}</div>
