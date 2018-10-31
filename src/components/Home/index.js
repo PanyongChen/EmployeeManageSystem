@@ -7,13 +7,15 @@ import * as actions from "../../actions";
 
 import List from "./List.js";
 import Loading from "../Loading";
+import employee from "../../reducers/employee";
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       input: "",
-      authenticated: false
+      authenticated: false,
+      aryEmployee: this.props.employee.employee,
     };
   }
 
@@ -22,9 +24,40 @@ class Home extends Component {
     this.props.dispatch(actions.toggle(false));
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.employee.employee.length === 0 &&
+      nextProps.employee.employee.length > 0) {
+      this.setState({ aryEmployee: this.filterEmployees(nextProps.employee.employee, this.state.input) });
+    }
+  }
+
   handleInput = e => {
-    this.setState({ input: e.target.value, autenticated: true });
-};
+    const input = e.target.value;
+    const aryEmployee = this.filterEmployees(this.props.employee.employee, input);
+
+    this.setState({ input, autenticated: true, aryEmployee });
+  };
+
+  filterEmployees = (aryEmployee, keyword) => {
+    let filteredAry;
+    if (keyword) {
+      const lowKeyword = keyword.toLowerCase();
+      filteredAry = aryEmployee.filter(employee => {
+        const fullName = `${employee.firstName} ${employee.lastName}`;
+
+        return (fullName.toLowerCase().includes(lowKeyword) ||
+                employee.age.toString().includes(lowKeyword) ||
+                employee.title.toLowerCase().includes(lowKeyword) ||
+                employee.cellPhone.toString().includes(lowKeyword) ||
+                employee.email.toLowerCase().includes(lowKeyword) ||
+                employee.directReports.length.toString().includes(lowKeyword)
+        );
+      })
+    } else {
+      filteredAry = aryEmployee;
+    }
+    return filteredAry;
+  };
 
   render() {
     return (
@@ -62,7 +95,7 @@ class Home extends Component {
             <Loading />
           ) : (
             <ul className="list-wrap">
-              {this.props.employee.employee.map((employee, index) => {
+              {this.state.aryEmployee.map((employee, index) => {
                 return <List key={index} data={employee} />;
               })}
             </ul>
