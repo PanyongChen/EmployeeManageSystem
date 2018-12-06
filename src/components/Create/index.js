@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import * as actions from "../../actions";
-import Home from "../Home";
 import image from "../data/image.js";
 
 const getBase64 = file => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => { 
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
     reader.onerror = error => reject(error);
@@ -32,15 +31,12 @@ class Create extends Component {
     };
   }
 
-  componentDidMount() {
-    this.props.dispatch(actions.getEmployees());
-  }
-
+ 
   firstNameChange = e => {
     this.setState({ firstName: e.target.value });
   };
 
-  lastNameChange = e => {
+  lastNameChange = e => { 
     this.setState({ lastName: e.target.value });
   };
 
@@ -81,9 +77,9 @@ class Create extends Component {
     }
   };
 
-  onSubmit = e => {
+  onSubmit = e => { 
     e.preventDefault();
-    let user = {
+    let employee = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
       manager: this.state.manager,
@@ -95,16 +91,16 @@ class Create extends Component {
       cellPhone: this.state.cellPhone,
       email: this.state.email
     };
-    this.props.dispatch(actions.addEmployee(user));
-    this.props.dispatch(actions.toggle(true));
+    this.props.dispatch(actions.addEmployee(employee, this.props.history));
+   
+   
   };
 
   render() {
-    return this.props.redirect ? (
-      <Redirect to={{ pathname: "/" }} />
-    ) : (
+    return ( 
       <div className="create-user">
-        <h2 className="head">Create A New Employee</h2>
+      <div className="error">{this.props.employee.err}</div>
+        <h2 className="createhead">Create A New Employee</h2>
         <form onSubmit={this.onSubmit}>
           <div className="form-group">
             {this.state.avatar === null ? (
@@ -112,15 +108,15 @@ class Create extends Component {
             ) : (
               <img src={this.state.avatar} />
             )}
-            <div class="custom-file">
+            <div className="custom-file">
               <input
                 type="file"
-                class="custom-file-input"
+                className="custom-file-input"
                 id="inputGroupFile01"
                 accept=".jpg, .jpeg, .png"
                 onChange={this.avatarChange}
               />
-              <label class="custom-file-label" for="inputGroupFile01">
+              <label className="custom-file-label" htmlFor="inputGroupFile01">
                 Upload Picture
               </label>
             </div>
@@ -132,7 +128,7 @@ class Create extends Component {
               className="form-control"
               id="firstName"
               onChange={this.firstNameChange}
-              value={this.state.firstName}
+              value={this.state.firstName||""}
               placeholder="First Name"
               required
             />
@@ -144,7 +140,7 @@ class Create extends Component {
               className="form-control"
               id="lastName"
               onChange={this.lastNameChange}
-              value={this.state.lastName}
+              value={this.state.lastName||""}
               placeholder="Last Name"
               required
             />
@@ -155,11 +151,11 @@ class Create extends Component {
               className="form-control"
               id="gender"
               onChange={this.managerChange}
-              value={this.state.manager}
+              value={this.state.manager||""}
             >
               <option value={null}>none</option>
-              {this.props.employee.employee.map(manager => {
-                return <option value={manager._id}>{manager.firstName} {manager.lastName}</option>;
+              {this.props.employee.employee.map((manager,index) => {
+                return <option key={index} value={manager._id}>{manager.firstName} {manager.lastName}</option>;
               })}
             </select>
           </div>
@@ -170,7 +166,7 @@ class Create extends Component {
               className="form-control"
               id="title"
               onChange={this.titleChange}
-              value={this.state.title}
+              value={this.state.title||""}
               placeholder="Title"
               required
             />
@@ -181,7 +177,7 @@ class Create extends Component {
               className="form-control"
               id="gender"
               onChange={this.genderChange}
-              value={this.state.gender}
+              value={this.state.gender||""}
             >
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -195,7 +191,7 @@ class Create extends Component {
               id="age"
               placeholder="Age"
               onChange={this.ageChange}
-              value={this.state.age}
+              value={this.state.age||""}
               maxLength="3"
               required
             />
@@ -208,7 +204,7 @@ class Create extends Component {
               id="age"
               placeholder="Email"
               onChange={this.emailChange}
-              value={this.state.email}
+              value={this.state.email||""}
               required
             />
           </div>
@@ -220,7 +216,7 @@ class Create extends Component {
               id="officePhone"
               placeholder="Office Phone"
               onChange={this.officePhoneChange}
-              value={this.state.officePhone}
+              value={this.state.officePhone||""}
               maxLength={10}
               required
             />
@@ -233,20 +229,21 @@ class Create extends Component {
               id="cellPhone"
               placeholder="Cell Phone"
               onChange={this.cellPhoneChange}
-              value={this.state.cellPhone}
+              value={this.state.cellPhone||""}
               maxLength={10}
               required
             />
           </div>
 
           <Link to="/">
-            <button type="submit" class="btn btn-secondary back-btn">
+            <button type="submit" className="btn btn-secondary back-btn">
               Back
             </button>
           </Link>
-          <button type="submit" class="btn btn-primary create-btn">
-            Create
-          </button>
+          <button type="submit" className="btn btn-primary create-btn" >
+            Submit 
+            {/* when clcik submit, will call onSubmit function*/}
+          </button> 
         </form>
       </div>
     );
@@ -255,8 +252,7 @@ class Create extends Component {
 
 const mapStateToProps = state => {
   return {
-    employee: state.employee,
-    redirect: state.redirect
+    employee: state.employee // employee props mapping
   };
 };
 
