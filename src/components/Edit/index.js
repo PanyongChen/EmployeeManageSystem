@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
-
+import Loading from "../Loading";
 import image from "../data/image.js";
 import * as actions from "../../actions";
 
@@ -28,7 +28,6 @@ const helper = (curId, res, map) => {
   if (!map.has(curId)) {
     return;
   }
-  // recursive rule
   res.push(curId);
   let employee = map.get(curId);
   for (let report of employee.directReports) {
@@ -36,6 +35,7 @@ const helper = (curId, res, map) => {
   }
   return;
 };
+
 
 class Edit extends Component {
   constructor(props) {
@@ -56,28 +56,30 @@ class Edit extends Component {
     };
   }
 
-  componentDidMount() {
-    this.setState({
-      _id: this.props.detail.detail._id,
-      firstName: this.props.detail.detail.firstName,
-      lastName: this.props.detail.detail.lastName,
-      title: this.props.detail.detail.title,
-      gender: this.props.detail.detail.gender,
-      age: this.props.detail.detail.age,
-      email: this.props.detail.detail.email,
-      avatar: this.props.detail.detail.avatar,
-      officePhone: this.props.detail.detail.officePhone,
-      cellPhone: this.props.detail.detail.cellPhone,
-      manager: this.props.detail.detail.manager
-    });
-    this.props.dispatch(actions.getEmployees());
-    this.setState({
-      invalid: findInvalidManager(
-        this.props.employee.employee,
-        this.props.detail.detail._id
-      )
-    });
+  componentDidMount() {   
+    console.log("componentDidMount in Edit")
+    this.props.dispatch(
+      actions.getEmployeeDetail(this.props.match.params.employeeId)
+    );
   }
+
+  componentWillReceiveProps(nextProps) {
+    console.log("componentWillReceiveProps in edit")
+    if (nextProps.detail.detail)  {
+      this.setState({...nextProps.detail.detail});//?
+      this.setState({
+        invalid: findInvalidManager(
+          this.props.employee.employee,
+          nextProps.detail.detail._id
+        )
+      }
+      );
+    }
+  }
+
+  firstNameChange = e => {
+    this.setState({ firstName: e.target.value });
+  };
 
   titleChange = e => {
     this.setState({ title: e.target.value });
@@ -118,7 +120,7 @@ class Edit extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    let user = {
+    let employee = {
       manager: this.state.manager,
       title: this.state.title,
       gender: this.state.gender,
@@ -128,16 +130,15 @@ class Edit extends Component {
       cellPhone: this.state.cellPhone,
       email: this.state.email
     };
-    this.props.dispatch(actions.editEmployee(this.state._id, user));
-    this.props.dispatch(actions.toggle(true));
+    this.props.dispatch(actions.editEmployee(this.state._id, employee,this.props.history));
   };
 
   render() {
-    return this.props.redirect ? (
-      <Redirect to={{ pathname: "/" }} />
-    ) : (
+    
+    return (
       <div className="create-user">
         <h2 className="head">Edit Employee</h2>
+        {!this.props.detail.isLoading && this.props.detail && this.props.detail.detail?( //?
         <form onSubmit={this.onSubmit}>
           <div className="form-group">
             {this.state.avatar === null ? (
@@ -153,7 +154,7 @@ class Edit extends Component {
                 accept=".jpg, .jpeg, .png"
                 onChange={this.avatarChange}
               />
-              <label class="custom-file-label" htmlFor="inputGroupFile01">
+              <label className="custom-file-label" htmlFor="inputGroupFile01">
                 Upload Picture
               </label>
             </div>
@@ -165,7 +166,7 @@ class Edit extends Component {
               className="form-control"
               id="firstName"
               onChange={this.firstNameChange}
-              value={this.state.firstName}
+              value={this.state.firstName||""}
               placeholder="First Name"
               readOnly
             />
@@ -177,7 +178,7 @@ class Edit extends Component {
               className="form-control"
               id="lastName"
               onChange={this.lastNameChange}
-              value={this.state.lastName}
+              value={this.state.lastName||""}
               placeholder="Last Name"
               readOnly
             />
@@ -188,26 +189,28 @@ class Edit extends Component {
               className="form-control"
               id="gender"
               onChange={this.managerChange}
-              value={this.state.manager}
+              value={this.state.manager||""}
             >
-              <option value="">none</option>
-              {this.props.employee.employee ? this.props.employee.employee.map(manager => {
-                if (manager._id !== this.props.detail.detail._id) {
-                  if (this.state.invalid.includes(manager._id)) {
+              <option value="none">no manager</option>
+              
+                                 
+             {this.props.employee.employee ? this.props.employee.employee.map((manager, index) => {
+                if (manager._id !== this.props.detail.detail._id) { 
+                  if (this.state.invalid.includes(manager._id)) { 
                     return (
-                      <option value={manager._id} disabled>
+                      <option key={index} value={manager._id} disabled> 
                         {manager.firstName} {manager.lastName}
                       </option>
                     );
                   } else {
                     return (
-                      <option value={manager._id}>
+                      <option key={index} value={manager._id}>
                         {manager.firstName} {manager.lastName}
                       </option>
                     );
                   }
                 }
-              }) : null}
+              }) : null} 
             </select>
           </div>
           <div className="form-group">
@@ -217,7 +220,7 @@ class Edit extends Component {
               className="form-control"
               id="title"
               onChange={this.titleChange}
-              value={this.state.title}
+              value={this.state.title||""}
               placeholder="Title"
               required
             />
@@ -228,7 +231,7 @@ class Edit extends Component {
               className="form-control"
               id="gender"
               onChange={this.genderChange}
-              value={this.state.gender}
+              value={this.state.gender||""}
             >
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -242,7 +245,7 @@ class Edit extends Component {
               id="age"
               placeholder="Age"
               onChange={this.ageChange}
-              value={this.state.age}
+              value={this.state.age||""}
               maxLength="3"
               required
             />
@@ -255,7 +258,7 @@ class Edit extends Component {
               id="age"
               placeholder="Email"
               onChange={this.emailChange}
-              value={this.state.email}
+              value={this.state.email||""}
               required
             />
           </div>
@@ -267,7 +270,7 @@ class Edit extends Component {
               id="officePhone"
               placeholder="Office Phone"
               onChange={this.officePhoneChange}
-              value={this.state.officePhone}
+              value={this.state.officePhone||""}
               maxLength={10}
               required
             />
@@ -280,21 +283,22 @@ class Edit extends Component {
               id="cellPhone"
               placeholder="Cell Phone"
               onChange={this.cellPhoneChange}
-              value={this.state.cellPhone}
+              value={this.state.cellPhone||""}
               maxLength={10}
               required
             />
           </div>
 
           <Link to="/">
-            <button type="submit" class="btn btn-secondary back-btn">
+            <button type="submit" className="btn btn-secondary back-btn">
               Back
             </button>
           </Link>
-          <button type="submit" class="btn btn-primary create-btn">
+          <button type="submit" className="btn btn-primary create-btn">
             Confirm
           </button>
-        </form>
+        </form>):
+        (<Loading />)}
       </div>
     );
   }
