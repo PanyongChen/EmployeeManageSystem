@@ -2,14 +2,14 @@ const axios = require("axios");
 
 function getEmployeeStart() {
   return {
-    type: "FETCH_EMPLOYEE_REQUEST"
+    type: "FETCH_EMPLOYEES_REQUEST"
   };
 }
 
 function getEmployeeFail(error) {
   return {
-    type: "FETCH_EMPLOYEE_FAILURE",
-    err: error
+    type: "FETCH_EMPLOYEES_FAILURE",
+    error: error
   };
 }
 
@@ -41,41 +41,45 @@ function getDetailFail() {
   };
 }
 
-function getManagerSuccess(response, id) {
+function addEmployeeSuccess(){
   return {
-    type: "FETCH_MANAGERS_SUCCESS",
-    managers: response,
-    id: id
+    type: "ADD_EMPLOYEE_SUCCESS"
   };
 }
-
 export const toggle = val => {
   return {
-    type: "TOGGLE",
+    type: "TOGGLE", 
     value: val
   };
 };
 
-export function addEmployee(employee) {
-  return (dispatch, getState) => {
+
+export function addEmployee(employee, history) {
+
+  return (dispatch) => {
+    dispatch(getEmployeeStart());
     axios
       .post("http://localhost:5000/api/employee", employee)
-      .then(response => {
-        dispatch(getEmployeeSuccess(response.data.employee));
-      })
+      .then(res => {
+      
+          history.push("/")// then will redirecting homepage 
+        }
+      )
+     
       .catch(err => {
-        dispatch(getEmployeeFail(err));
+        dispatch(getEmployeeFail(err.toString())); 
+        
       });
   };
 }
 
 export function getEmployees() {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(getEmployeeStart());
     axios
       .get("http://localhost:5000/api/employees")
       .then(response => {
-        dispatch(getEmployeeSuccess(response.data.employee));
+        dispatch(getEmployeeSuccess(response.data.employees));
       })
       .catch(err => {
         dispatch(getEmployeeFail(err));
@@ -84,7 +88,7 @@ export function getEmployees() {
 }
 
 export function getEmployeeDetail(id) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(getDetailStart());
     axios
       .get(`http://localhost:5000/api/employee/${id}`)
@@ -98,11 +102,15 @@ export function getEmployeeDetail(id) {
 }
 
 export function deleteEmployee(id) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
+    dispatch(getEmployeeStart());
+    console.log("requestdelete")
     axios
-      .delete(`http://localhost:5000/api/employee/${id}`)
+      .delete(`http://localhost:5000/api/employee/${id}`) 
       .then(response => {
-        dispatch(getEmployeeSuccess(response.data.employee));
+        console.log("anserdelete")
+        console.log(response.data.employees)
+        dispatch(getEmployeeSuccess(response.data.employees));
       })
       .catch(err => {
         dispatch(getDetailFail(err));
@@ -110,16 +118,18 @@ export function deleteEmployee(id) {
   };
 }
 
-export function editEmployee(id, user) {
+export function editEmployee(id, user, history) {
   return (dispatch, getState) => {
+    dispatch(getEmployeeStart());
     axios
       .put(`http://localhost:5000/api/employee/${id}`, user)
       .then(response => {
-        dispatch(getEmployeeSuccess(response.data.employee));
-      })
+        // if (response.status === 200) {
+          history.push("/")
+        }
+      )
       .catch(err => {
         dispatch(getDetailFail(err));
       });
   };
 }
-
